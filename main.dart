@@ -184,3 +184,97 @@ class _VpnHomePageState extends State<VpnHomePage> {
     );
   }
 }
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: VpnHomePage(),
+    );
+  }
+}
+
+class VpnHomePage extends StatefulWidget {
+  @override
+  _VpnHomePageState createState() => _VpnHomePageState();
+}
+
+class _VpnHomePageState extends State<VpnHomePage> {
+  bool _hasJoinedTelegram = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTelegramStatus();
+  }
+
+  // Check if the user has joined the Telegram channel
+  Future<void> _checkTelegramStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _hasJoinedTelegram = prefs.getBool('hasJoinedTelegram') ?? false;
+    });
+
+    if (!_hasJoinedTelegram) {
+      _showTelegramPopUp();
+    }
+  }
+
+  // Show Telegram pop-up
+  void _showTelegramPopUp() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Join Our Telegram Channel"),
+          content: Text(
+              "Stay updated with the latest news and updates by joining our Telegram channel."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Later"),
+            ),
+            TextButton(
+              onPressed: () async {
+                const telegramUrl = "https://t.me/jiotunnelvpnindia";
+                if (await canLaunch(telegramUrl)) {
+                  await launch(telegramUrl); // Open Telegram channel link
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('hasJoinedTelegram', true); // Save preference
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Could not open Telegram.")),
+                  );
+                }
+              },
+              child: Text("Join Now"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Jio Tunnel VPN'),
+      ),
+      body: Center(
+        child: Text('Welcome to Jio Tunnel VPN'),
+      ),
+    );
+  }
+}
+
