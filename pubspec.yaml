@@ -7,3 +7,10 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/hacker_bg.jpg
+
+
+    dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.1.1
+  url_launcher: ^6.1.8
