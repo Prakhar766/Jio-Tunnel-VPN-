@@ -1,3 +1,9 @@
 flutter:
   assets:
-    - /storage/emulated/0/Download/17ab013a-b684-4c72-886f-733e0beabfb2.jpeg
+    - assets/images/logo.png
+
+
+    flutter:
+  assets:
+    - assets/images/logo.png
+    - assets/images/hacker_bg.jpg
